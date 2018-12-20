@@ -12,7 +12,7 @@ ARABIC_OPTION = " ArabicDash "
 
 def find_fldChar_range(elm):
     """
-    fldCharの開始位置と終了位置を探す
+    fldCharの開始と終了の要素を探す
     """
 
     prev_elm = next_elm = elm
@@ -81,12 +81,10 @@ def contains_prev_inlinetext(elm):
     手前の兄弟要素の inline text を処理
     """
 
-    # フィールドの区切りタグを無視する
-    prev_elm = elm.previous_sibling
+    prev_elm = elm
     prev_convert_no = 0
 
     while True:
-        # 前のタグをどんどん見ていく
         prev_elm = prev_elm.previous_sibling
         res, prev_convert_no = contains_arabic_element(prev_elm, prev_convert_no)
 
@@ -100,8 +98,7 @@ def contains_next_inlinetext(elm):
     """
     次の兄弟要素の inline text を処理
     """
-    # フィールドの区切りタグを無視する
-    next_elm = elm.next_sibling.next_sibling.next_sibling
+    next_elm = elm
     next_convert_no = 0
 
     while True:
@@ -175,8 +172,8 @@ def formatting_page_no(file_path):
     if begin_elm is None or end_elm is None:
         return
 
-    prev_elm, prev_no = contains_prev_inlinetext(page_no_elm)
-    next_elm, next_no = contains_next_inlinetext(page_no_elm)
+    prev_elm, prev_no = contains_prev_inlinetext(begin_elm)
+    next_elm, next_no = contains_next_inlinetext(end_elm)
 
     if prev_no == 0 or next_no == 0:
         return
@@ -201,10 +198,6 @@ def formatting_page_no(file_path):
 
 
 if __name__ == '__main__':
-    # TODO: zipを解凍する処理
-    # 解凍後にフッターを検索する
-    # 整形する処理(一部みかん)
-    # 解凍したファイルを再度zipにまとめる。
 
     # Test
     import filecmp
