@@ -131,10 +131,24 @@ if __name__ == '__main__':
     # 整形する処理(一部みかん)
     # 解凍したファイルを再度zipにまとめる。
 
-    footer = formatting_page_no("footer1.xml")
-    f = open("res.xml", 'w')
-    f.write(str(footer))
+    # Test
+    import filecmp
+    resources_dir = "test/resources/"
+    results_dir = "test/results/"
+    true_dir = "test/true/"
 
-    footer = formatting_page_no("footer2.xml")
-    f = open("res2.xml", 'w')
-    f.write(str(footer))
+    # pdf to docx
+    pdf_to_docx_footer = "footer1.xml"
+    footer = formatting_page_no(resources_dir + pdf_to_docx_footer)
+    with open(results_dir + pdf_to_docx_footer, 'w') as _f:
+        _f.write(str(footer))
+
+    assert(filecmp.cmp(results_dir + pdf_to_docx_footer, true_dir + pdf_to_docx_footer))
+
+    # PAGEの両端にダッシュを含む
+    dash_footer = "footer2.xml"
+    footer = formatting_page_no(resources_dir + dash_footer)
+    with open(results_dir + dash_footer, 'w') as _f:
+        _f.write(str(footer))
+
+    assert(filecmp.cmp(results_dir + dash_footer, true_dir + dash_footer))
