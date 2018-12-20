@@ -4,4 +4,6 @@
 # python
 venv
 
-
+# project
+test/results
+!.gitkeep
