@@ -9,21 +9,21 @@ IGNORE_STRING = " "
 ARABIC_OPTION = " ArabicDash "
 
 
-def contains_prev_inlinetext(page_no_elm):
+def contains_prev_inlinetext(elm):
     """
     手前の兄弟要素の inline text を処理
-    :param page_no_elm:
+    :param elm:
     :return:
     """
 
     # フィールドの区切りタグを無視する
-    prev_elm = page_no_elm.previous_sibling
+    prev_elm = elm.previous_sibling
     prev_convert_no = 0
 
     while True:
         # 前のタグをどんどん見ていく
         prev_elm = prev_elm.previous_sibling
-        res, prev_convert_no = contains_arabic_text(prev_elm, prev_convert_no)
+        res, prev_convert_no = contains_arabic_element(prev_elm, prev_convert_no)
 
         if not res:
             break
@@ -31,19 +31,19 @@ def contains_prev_inlinetext(page_no_elm):
     return prev_elm, prev_convert_no
 
 
-def contains_next_inlinetext(page_no_elm):
+def contains_next_inlinetext(elm):
     """
     次の兄弟要素の inline text を処理
-    :param page_no_elm:
+    :param elm:
     :return:
     """
     # フィールドの区切りタグを無視する
-    next_elm = page_no_elm.next_sibling.next_sibling.next_sibling
+    next_elm = elm.next_sibling.next_sibling.next_sibling
     next_convert_no = 0
 
     while True:
         next_elm = next_elm.next_sibling
-        res, next_convert_no = contains_arabic_text(next_elm, next_convert_no)
+        res, next_convert_no = contains_arabic_element(next_elm, next_convert_no)
 
         if not res:
             break
@@ -51,7 +51,7 @@ def contains_next_inlinetext(page_no_elm):
     return next_elm, next_convert_no
 
 
-def contains_arabic_text(elm, convert_no):
+def contains_arabic_element(elm, convert_no):
     """
     :param elm:
     :param convert_no:
@@ -133,6 +133,9 @@ if __name__ == '__main__':
     # 解凍したファイルを再度zipにまとめる。
 
     footer = formatting_page_no("footer1.xml")
-
     f = open("res.xml", 'w')
+    f.write(str(footer))
+
+    footer = formatting_page_no("footer2.xml")
+    f = open("res2.xml", 'w')
     f.write(str(footer))
