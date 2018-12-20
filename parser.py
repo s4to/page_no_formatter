@@ -12,8 +12,6 @@ ARABIC_OPTION = " ArabicDash "
 def contains_prev_inlinetext(elm):
     """
     手前の兄弟要素の inline text を処理
-    :param elm:
-    :return:
     """
 
     # フィールドの区切りタグを無視する
@@ -34,8 +32,6 @@ def contains_prev_inlinetext(elm):
 def contains_next_inlinetext(elm):
     """
     次の兄弟要素の inline text を処理
-    :param elm:
-    :return:
     """
     # フィールドの区切りタグを無視する
     next_elm = elm.next_sibling.next_sibling.next_sibling
@@ -53,10 +49,13 @@ def contains_next_inlinetext(elm):
 
 def contains_arabic_element(elm, convert_no):
     """
-    :param elm:
-    :param convert_no:
-    :return: True/False: 次のelementを処理するかどうか
-             整形する可能性のある番号
+    arabic 要素を含んでいる位置を特定する
+    Args:
+        elm: XMLの要素
+        convert_no: 位置
+    Returns:
+        bool: 次のelementを処理するかどうか
+        int: 整形する可能性のある番号
     """
 
     # 直前のタグが存在しない、もしくは、rタグでない場合そく終了する
