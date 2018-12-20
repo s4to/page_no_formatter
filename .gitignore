@@ -3,6 +3,7 @@
 
 # python
 venv
+__pycache__
 
 # project
 test/results
