@@ -4,12 +4,17 @@ from bs4 import BeautifulSoup
 import re
 
 FORMAT_TAG = "instrText"
-CONVERT_STRING = re.compile("\ *-\ *")
+CONVERT_STRING = re.compile(r"\ *-\ *")
 IGNORE_STRING = " "
 ARABIC_OPTION = " ArabicDash "
 
 
-def contains_prev_element(page_no_elm):
+def contains_prev_inlinetext(page_no_elm):
+    """
+    手前の兄弟要素の inline text を処理
+    :param page_no_elm:
+    :return:
+    """
 
     # フィールドの区切りタグを無視する
     prev_elm = page_no_elm.previous_sibling
@@ -18,7 +23,7 @@ def contains_prev_element(page_no_elm):
     while True:
         # 前のタグをどんどん見ていく
         prev_elm = prev_elm.previous_sibling
-        res, prev_convert_no = contains_text(prev_elm, prev_convert_no)
+        res, prev_convert_no = contains_arabic_text(prev_elm, prev_convert_no)
 
         if not res:
             break
@@ -26,15 +31,19 @@ def contains_prev_element(page_no_elm):
     return prev_elm, prev_convert_no
 
 
-def contains_next_element(pageNoElm):
-
+def contains_next_inlinetext(page_no_elm):
+    """
+    次の兄弟要素の inline text を処理
+    :param page_no_elm:
+    :return:
+    """
     # フィールドの区切りタグを無視する
-    next_elm = pageNoElm.next_sibling.next_sibling.next_sibling
+    next_elm = page_no_elm.next_sibling.next_sibling.next_sibling
     next_convert_no = 0
 
     while True:
         next_elm = next_elm.next_sibling
-        res, next_convert_no = contains_text(next_elm,  next_convert_no)
+        res, next_convert_no = contains_arabic_text(next_elm, next_convert_no)
 
         if not res:
             break
@@ -42,7 +51,7 @@ def contains_next_element(pageNoElm):
     return next_elm, next_convert_no
 
 
-def contains_text(elm, convert_no):
+def contains_arabic_text(elm, convert_no):
     """
     :param elm:
     :param convert_no:
@@ -83,15 +92,17 @@ def formatting_page_no(file_path):
     # TODO: 複数に対応する予定 とりあえず
     instrTexts = instrTexts[0]
 
-    # TODO: ここから関数に切り出す予定
     # TODO: PAGE かどうか。  (\* ArabicDash を含まない)
-    if not instrTexts.string.find("\ PAGE\ "):
+    if not instrTexts.string.find(r"\ PAGE\ "):
         return
 
     page_no_elm = instrTexts.parent
 
-    prev_elm, prev_no = contains_prev_element(page_no_elm)
-    next_elm, next_no = contains_next_element(page_no_elm)
+    # TODO: ここでinstrTextsのフォーマットを検証
+    # 開始位置と終了位置を取得する
+
+    prev_elm, prev_no = contains_prev_inlinetext(page_no_elm)
+    next_elm, next_no = contains_next_inlinetext(page_no_elm)
 
     if prev_no == 0 or next_no == 0:
         return
