@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import re
 
 FORMAT_TAG = "instrText"
+ALLOW_OPTION = "MERGEFORMAT"
 CONVERT_STRING = re.compile(r"\ *-\ *")
 IGNORE_STRING = " "
 ARABIC_OPTION = " ArabicDash "
@@ -91,9 +92,13 @@ def formatting_page_no(file_path):
     # TODO: 複数に対応する予定 とりあえず
     instrTexts = instrTexts[0]
 
-    # TODO: PAGE かどうか。  (\* ArabicDash を含まない)
     if not instrTexts.string.find(r"\ PAGE\ "):
         return
+
+    # 余計なオプションが付いていたら処理しない
+    for option in instrTexts.string.split(r"\*")[1:]:
+        if option.find(ALLOW_OPTION) == -1:
+            return
 
     page_no_elm = instrTexts.parent
 
