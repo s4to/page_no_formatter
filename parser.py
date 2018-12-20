@@ -6,8 +6,74 @@ import re
 FORMAT_TAG = "instrText"
 ALLOW_OPTION = "MERGEFORMAT"
 CONVERT_STRING = re.compile(r"\ *-\ *")
-IGNORE_STRING = " "
+ALLOW_STRING = " "
 ARABIC_OPTION = " ArabicDash "
+
+
+def find_fldChar_range(elm):
+    """
+    fldCharの開始位置と終了位置を探す
+    """
+
+    prev_elm = next_elm = elm
+    begin_elm = None
+    end_elm = None
+
+    # 開始位置の取得
+    while True:
+        prev_elm = prev_elm.previous_sibling
+
+        if not prev_elm:
+            return None, None
+
+        begin_elm = contains_field_char(prev_elm, "begin")
+
+        if begin_elm:
+            break
+
+    # 停止位置の取得
+    separate_attr = False
+    while True:
+        next_elm = next_elm.next_sibling
+        
+        if not next_elm:
+            return None, None
+
+        if not separate_attr:
+            if contains_field_char(next_elm, "separate") is not None:
+                separate_attr = True
+        else:
+            end_elm = contains_field_char(next_elm, "end")
+
+        if end_elm:
+            break
+
+    return begin_elm, end_elm
+
+
+def contains_field_char(elm, attr_val):
+    """
+    fldCharタグを含んでいれば返す
+    Args:
+        elm: 検索するXMLの要素
+        attr_val: 属性の値と一致するか判定する文字列
+    Returns:
+        elm: fldCharタグでかつ、指定の属性を持っていれば要素を返す
+    """
+
+    fld_char = elm.find("fldChar", recursive=False)
+
+    if not fld_char:
+        return None
+
+    field_attr = "w:fldCharType"
+
+    # タグに ":" を含むとfind, selectできないので、属性を取得して処理していく
+    for k, v in fld_char.attrs.items():
+        if k == field_attr and v == attr_val:
+            return elm
+
+    return None
 
 
 def contains_prev_inlinetext(elm):
@@ -68,7 +134,7 @@ def contains_arabic_element(elm, convert_no):
         return False, 0
 
     # インナーテキストが空の場合、半角スペースとして認識するよう
-    if inline_text.string == IGNORE_STRING:
+    if inline_text.string == ALLOW_STRING:
         convert_no += 1
         return True, convert_no
 
@@ -102,8 +168,12 @@ def formatting_page_no(file_path):
 
     page_no_elm = instrTexts.parent
 
-    # TODO: ここでinstrTextsのフォーマットを検証
     # 開始位置と終了位置を取得する
+    begin_elm, end_elm = find_fldChar_range(page_no_elm)
+
+    # fldCharが壊れていたら、何もせず終了
+    if begin_elm is None or end_elm is None:
+        return
 
     prev_elm, prev_no = contains_prev_inlinetext(page_no_elm)
     next_elm, next_no = contains_next_inlinetext(page_no_elm)
