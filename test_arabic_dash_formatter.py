@@ -15,7 +15,7 @@ def main():
     pdf_to_docx_footer = "footer1.xml"
     footer = formatting_page_no(resources_dir + pdf_to_docx_footer)
     with open(results_dir + pdf_to_docx_footer, 'w') as _f:
-        _f.write(str(footer))
+        _f.write(footer)
 
     assert(filecmp.cmp(results_dir + pdf_to_docx_footer, true_dir + pdf_to_docx_footer))
 
@@ -23,7 +23,7 @@ def main():
     dash_footer = "footer2.xml"
     footer = formatting_page_no(resources_dir + dash_footer)
     with open(results_dir + dash_footer, 'w') as _f:
-        _f.write(str(footer))
+        _f.write(footer)
 
     assert(filecmp.cmp(results_dir + dash_footer, true_dir + dash_footer))
 

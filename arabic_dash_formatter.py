@@ -144,6 +144,7 @@ def contains_arabic_element(elm, convert_no):
 
 
 def formatting_page_no(file_path):
+
     f = open(file_path, 'r')
     _xml = f.read()
 
@@ -193,7 +194,4 @@ def formatting_page_no(file_path):
 
     instrTexts.string = "\*".join(field)
 
-    print("exec 0")
-    return soup
-
-
+    return str(soup)
