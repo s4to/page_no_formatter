@@ -192,9 +192,11 @@ def convert_element(instrText):
         return False
 
     prev_elm, prev_no = contains_prev_inlinetext(begin_elm)
-    next_elm, next_no = contains_next_inlinetext(end_elm)
+    if prev_no == 0:
+        return False
 
-    if prev_no == 0 or next_no == 0:
+    next_elm, next_no = contains_next_inlinetext(end_elm)
+    if next_no == 0:
         return False
 
     convert_page_no(prev_elm, prev_no, next_elm, next_no, instrText)
