@@ -10,6 +10,7 @@ arabic_dash_formatter
 ○: - PAGE - 
 ○: -    PAGE -
 ✗: - A PAGE -
+✗: - PAGE /* Option -
 ```
 
 ## 使い方
