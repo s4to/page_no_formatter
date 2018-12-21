@@ -217,7 +217,7 @@ def convert_arabic_dash(file_path):
         soup = BeautifulSoup(_xml, "xml")
 
         if soup.find("ftr") is None:
-            return
+            return None
 
         # すべてのw:instrTextを対象とする
         instrTexts = soup.find_all(FORMAT_TAG)

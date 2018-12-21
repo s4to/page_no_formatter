@@ -72,6 +72,18 @@ def main():
 
     assert(filecmp.cmp(results_dir + option, true_dir + option))
 
+    # footer.xmlでない
+    non_footer = "non-footer.xml"
+    footer = convert_arabic_dash(resources_dir + non_footer)
+    if footer is None:
+        shutil.copyfile(resources_dir + non_footer, results_dir + non_footer)
+    else:
+        with open(results_dir + non_footer, 'w') as _f:
+            _f.write(footer)
+
+    assert(filecmp.cmp(results_dir + non_footer, true_dir + non_footer))
+
+
 if __name__ == '__main__':
     main()
 
