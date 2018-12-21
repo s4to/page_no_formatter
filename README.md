@@ -9,17 +9,15 @@ arabic_dash_formatter
 ```
 ○: - PAGE - 
 ○: -    PAGE -
-○: - PAGE    -
 ✗: - A PAGE -
 ```
 
-
 ## 使い方
 ```
-from arabic_dash_formatter import formatting_page_no
+from page_no_formatter import convert_arabic_dash
 
 # ファイルパスを与えると変換した文字列を返す
-footer_xml = formatting_page_no("test/resources/footer1.xml")
+footer_xml = convert_arabic_dash("test/resources/footer1.xml")
 
 # 変換しない場合は、Noneを返します
 print(footer_xml)
