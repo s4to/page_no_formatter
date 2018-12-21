@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from page_no_formatter import arabic_dash_converter
+from page_no_formatter import convert_arabic_dash
 import shutil
 
 
@@ -14,7 +14,7 @@ def main():
 
     # pdf to docx -> case: -  PAGE -
     pdf_to_docx_footer = "footer1.xml"
-    footer = arabic_dash_converter(resources_dir + pdf_to_docx_footer)
+    footer = convert_arabic_dash(resources_dir + pdf_to_docx_footer)
     with open(results_dir + pdf_to_docx_footer, 'w') as _f:
         _f.write(footer)
 
@@ -22,7 +22,7 @@ def main():
 
     # PAGEの両端にダッシュを含む
     dash_footer = "footer2.xml"
-    footer = arabic_dash_converter(resources_dir + dash_footer)
+    footer = convert_arabic_dash(resources_dir + dash_footer)
     with open(results_dir + dash_footer, 'w') as _f:
         _f.write(footer)
 
@@ -30,7 +30,7 @@ def main():
 
     # ページ番号を含まない
     nopage_field = "nopage_field.xml"
-    footer = arabic_dash_converter(resources_dir + nopage_field)
+    footer = convert_arabic_dash(resources_dir + nopage_field)
     if footer is None:
         shutil.copyfile(resources_dir + nopage_field, results_dir + nopage_field)
     else:
@@ -41,7 +41,7 @@ def main():
 
     # - <rタグ以外> PAGE -
     include_nonr_tag = "include_non-r_tag.xml"
-    footer = arabic_dash_converter(resources_dir + include_nonr_tag)
+    footer = convert_arabic_dash(resources_dir + include_nonr_tag)
     if footer is None:
         shutil.copyfile(resources_dir + include_nonr_tag, results_dir + include_nonr_tag)
     else:
@@ -52,7 +52,7 @@ def main():
 
     # -S PAGE - 不正なフォーマット
     between_string = "between_string.xml"
-    footer = arabic_dash_converter(resources_dir + between_string)
+    footer = convert_arabic_dash(resources_dir + between_string)
     if footer is None:
         shutil.copyfile(resources_dir + between_string, results_dir + between_string)
     else:
@@ -63,7 +63,7 @@ def main():
 
     # - PAGE /* OPTION -
     option = "option.xml"
-    footer = arabic_dash_converter(resources_dir + option)
+    footer = convert_arabic_dash(resources_dir + option)
     if footer is None:
         shutil.copyfile(resources_dir + option, results_dir + option)
     else:

@@ -201,7 +201,7 @@ def convert_element(instrText):
     return True
 
 
-def arabic_dash_converter(file_path):
+def convert_arabic_dash(file_path):
     """
     XMLの PAGE フィールドが - (dash) で囲まれていた場合変換する
     Args:
