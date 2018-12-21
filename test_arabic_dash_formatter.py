@@ -1,7 +1,8 @@
 # coding: utf-8
 
-from arabic_dash_formatter import formatting_page_no
+from page_no_formatter import arabic_dash_converter
 import shutil
+
 
 def main():
 
@@ -13,7 +14,7 @@ def main():
 
     # pdf to docx
     pdf_to_docx_footer = "footer1.xml"
-    footer = formatting_page_no(resources_dir + pdf_to_docx_footer)
+    footer = arabic_dash_converter(resources_dir + pdf_to_docx_footer)
     with open(results_dir + pdf_to_docx_footer, 'w') as _f:
         _f.write(footer)
 
@@ -21,7 +22,7 @@ def main():
 
     # PAGEの両端にダッシュを含む
     dash_footer = "footer2.xml"
-    footer = formatting_page_no(resources_dir + dash_footer)
+    footer = arabic_dash_converter(resources_dir + dash_footer)
     with open(results_dir + dash_footer, 'w') as _f:
         _f.write(footer)
 
@@ -29,7 +30,7 @@ def main():
 
     # ページ番号を含まない
     nopage_field = "nopage_field.xml"
-    footer = formatting_page_no(resources_dir + nopage_field)
+    footer = arabic_dash_converter(resources_dir + nopage_field)
     if footer is None:
         shutil.copyfile(resources_dir + nopage_field, results_dir + nopage_field)
     else:

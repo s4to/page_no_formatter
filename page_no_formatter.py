@@ -164,7 +164,7 @@ def convert_page_no(prev_elm, prev_no, next_elm, next_no, elm):
     elm.string = "\*".join(field)
 
 
-def formatting_page_no(file_path):
+def arabic_dash_converter(file_path):
     """
     XMLの PAGE フィールドが - (dash) で囲まれていた場合変換する
     Args:
