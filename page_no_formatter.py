@@ -5,7 +5,7 @@ import re
 
 FORMAT_TAG = "instrText"
 ALLOW_OPTION = "MERGEFORMAT"
-CONVERT_STRING = re.compile(r"\ *-\ *")
+CONVERT_STRING = re.compile(r" *- *")
 ALLOW_STRING = " "
 ARABIC_OPTION = " ArabicDash "
 
@@ -136,7 +136,7 @@ def contains_arabic_element(elm, convert_no):
         return True, convert_no
 
     # ダッシュが含まれるかどうか
-    if CONVERT_STRING.match(inline_text.string):
+    if CONVERT_STRING.fullmatch(inline_text.string):
         convert_no += 1
         return False, convert_no
     else:
