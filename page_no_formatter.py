@@ -184,7 +184,7 @@ def convert_element(instrText):
 
     page_no_elm = instrText.parent
 
-    # 開始位置と終了位置を取得する
+    # fldCharの開始位置と終了位置を取得する
     begin_elm, end_elm = find_fldChar_range(page_no_elm)
 
     # 想定外のfldCharははじく
