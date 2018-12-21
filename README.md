@@ -1,4 +1,4 @@
-arabic_dash_formatter
+Page No Formatter
 ===
 
 ## 説明
