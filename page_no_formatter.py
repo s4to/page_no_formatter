@@ -4,7 +4,8 @@ from bs4 import BeautifulSoup
 import re
 
 FORMAT_TAG = "instrText"
-ALLOW_OPTION = "MERGEFORMAT"
+CONVERT_FIELD = re.compile(r" *PAGE .*")
+ALLOW_OPTION = re.compile(r" *MERGEFORMAT *")
 CONVERT_STRING = re.compile(r" *- *")
 ALLOW_STRING = " "
 ARABIC_OPTION = " ArabicDash "
@@ -173,12 +174,12 @@ def convert_element(instrText):
         bool: 変換したかどうか
     """
 
-    if not instrText.string.find(r"\ PAGE\ "):
+    if not CONVERT_FIELD.fullmatch(instrText.string):
         return False
 
     # 余計なオプションが付いていたら処理しない
     for option in instrText.string.split(r"\*")[1:]:
-        if option.find(ALLOW_OPTION) == -1:
+        if not ALLOW_OPTION.fullmatch(option):
             return False
 
     page_no_elm = instrText.parent
