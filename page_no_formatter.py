@@ -173,46 +173,50 @@ def arabic_dash_converter(file_path):
         str: XML
     """
 
-    f = open(file_path, 'r')
-    _xml = f.read()
+    with open(file_path, 'r') as f:
+        _xml = f.read()
 
-    soup = BeautifulSoup(_xml, "xml")
+    try:
+        soup = BeautifulSoup(_xml, "xml")
 
-    if soup.find("ftr") is None:
-        return
+        if soup.find("ftr") is None:
+            return
 
-    # すべてのw:instrTextを対象とする
-    instrTexts = soup.find_all(FORMAT_TAG)
-    is_convert = False
-    for instrText in instrTexts:
+        # すべてのw:instrTextを対象とする
+        instrTexts = soup.find_all(FORMAT_TAG)
+        is_convert = False
+        for instrText in instrTexts:
 
-        if not instrText.string.find(r"\ PAGE\ "):
-            continue
-
-        # 余計なオプションが付いていたら処理しない
-        for option in instrText.string.split(r"\*")[1:]:
-            if option.find(ALLOW_OPTION) == -1:
+            if not instrText.string.find(r"\ PAGE\ "):
                 continue
 
-        page_no_elm = instrText.parent
+            # 余計なオプションが付いていたら処理しない
+            for option in instrText.string.split(r"\*")[1:]:
+                if option.find(ALLOW_OPTION) == -1:
+                    continue
 
-        # 開始位置と終了位置を取得する
-        begin_elm, end_elm = find_fldChar_range(page_no_elm)
+            page_no_elm = instrText.parent
 
-        # 想定外のfldCharははじく
-        if begin_elm is None or end_elm is None:
-            continue
+            # 開始位置と終了位置を取得する
+            begin_elm, end_elm = find_fldChar_range(page_no_elm)
 
-        prev_elm, prev_no = contains_prev_inlinetext(begin_elm)
-        next_elm, next_no = contains_next_inlinetext(end_elm)
+            # 想定外のfldCharははじく
+            if begin_elm is None or end_elm is None:
+                continue
 
-        if prev_no == 0 or next_no == 0:
-            continue
+            prev_elm, prev_no = contains_prev_inlinetext(begin_elm)
+            next_elm, next_no = contains_next_inlinetext(end_elm)
 
-        convert_page_no(prev_elm, prev_no, next_elm, next_no, instrText)
-        is_convert = True
+            if prev_no == 0 or next_no == 0:
+                continue
 
-    if is_convert:
-        return str(soup)
-    else:
+            convert_page_no(prev_elm, prev_no, next_elm, next_no, instrText)
+            is_convert = True
+
+        if is_convert:
+            return str(soup)
+        else:
+            return None
+
+    except Exception as e:
         return None
