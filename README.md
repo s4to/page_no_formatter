@@ -23,3 +23,8 @@ footer_xml = convert_arabic_dash("test/resources/footer1.xml")
 # 変換しない場合は、Noneを返します
 print(footer_xml)
 ```
+
+## Test
+```
+python test.py
+```
