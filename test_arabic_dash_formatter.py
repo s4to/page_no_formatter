@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from arabic_dash_formatter import formatting_page_no
-
+import shutil
 
 def main():
 
@@ -26,6 +26,17 @@ def main():
         _f.write(footer)
 
     assert(filecmp.cmp(results_dir + dash_footer, true_dir + dash_footer))
+
+    # ページ番号を含まない
+    nopage_field = "nopage_field.xml"
+    footer = formatting_page_no(resources_dir + nopage_field)
+    if footer is None:
+        shutil.copyfile(resources_dir + nopage_field, results_dir + nopage_field)
+    else:
+        with open(results_dir + nopage_field, 'w') as _f:
+            _f.write(footer)
+
+    assert(filecmp.cmp(results_dir + nopage_field, true_dir + nopage_field))
 
 
 if __name__ == '__main__':

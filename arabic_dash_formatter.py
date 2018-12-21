@@ -143,42 +143,11 @@ def contains_arabic_element(elm, convert_no):
         return False, 0
 
 
-def formatting_page_no(file_path):
-
-    f = open(file_path, 'r')
-    _xml = f.read()
-
-    soup = BeautifulSoup(_xml, "xml")
-
-    # すべてのw:instrTextを取得
-    instrTexts = soup.find_all(FORMAT_TAG)
-
-    # TODO: 複数に対応する予定 とりあえず
-    instrTexts = instrTexts[0]
-
-    if not instrTexts.string.find(r"\ PAGE\ "):
-        return
-
-    # 余計なオプションが付いていたら処理しない
-    for option in instrTexts.string.split(r"\*")[1:]:
-        if option.find(ALLOW_OPTION) == -1:
-            return
-
-    page_no_elm = instrTexts.parent
-
-    # 開始位置と終了位置を取得する
-    begin_elm, end_elm = find_fldChar_range(page_no_elm)
-
-    # fldCharが壊れていたら、何もせず終了
-    if begin_elm is None or end_elm is None:
-        return
-
-    prev_elm, prev_no = contains_prev_inlinetext(begin_elm)
-    next_elm, next_no = contains_next_inlinetext(end_elm)
-
-    if prev_no == 0 or next_no == 0:
-        return
-
+def convert_page_no(prev_elm, prev_no, next_elm, next_no, elm):
+    """
+    PAGE フィールドを変換する
+    XMLの構造が変わる
+    """
     for _ in range(prev_no):
         e = prev_elm
         prev_elm = prev_elm.next_sibling
@@ -189,9 +158,61 @@ def formatting_page_no(file_path):
         next_elm = next_elm.previous_sibling
         e.decompose()
 
-    field = instrTexts.string.split("\*")
+    field = elm.string.split("\*")
     field.insert(1, ARABIC_OPTION)
 
-    instrTexts.string = "\*".join(field)
+    elm.string = "\*".join(field)
 
-    return str(soup)
+
+def formatting_page_no(file_path):
+    """
+    XMLの PAGE フィールドが - (dash) で囲まれていた場合変換する
+    Args:
+        file_path: XMLのファイルパス
+    Returns:
+        str: XML
+    """
+
+    f = open(file_path, 'r')
+    _xml = f.read()
+
+    soup = BeautifulSoup(_xml, "xml")
+
+    if soup.find("ftr") is None:
+        return
+
+    # すべてのw:instrTextを対象とする
+    instrTexts = soup.find_all(FORMAT_TAG)
+    is_convert = False
+    for instrText in instrTexts:
+
+        if not instrText.string.find(r"\ PAGE\ "):
+            continue
+
+        # 余計なオプションが付いていたら処理しない
+        for option in instrText.string.split(r"\*")[1:]:
+            if option.find(ALLOW_OPTION) == -1:
+                continue
+
+        page_no_elm = instrText.parent
+
+        # 開始位置と終了位置を取得する
+        begin_elm, end_elm = find_fldChar_range(page_no_elm)
+
+        # 想定外のfldCharははじく
+        if begin_elm is None or end_elm is None:
+            continue
+
+        prev_elm, prev_no = contains_prev_inlinetext(begin_elm)
+        next_elm, next_no = contains_next_inlinetext(end_elm)
+
+        if prev_no == 0 or next_no == 0:
+            continue
+
+        convert_page_no(prev_elm, prev_no, next_elm, next_no, instrText)
+        is_convert = True
+
+    if is_convert:
+        return str(soup)
+    else:
+        return None
