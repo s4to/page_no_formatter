@@ -61,6 +61,16 @@ def main():
 
     assert(filecmp.cmp(results_dir + between_string, true_dir + between_string))
 
+    # - PAGE /* OPTION -
+    option = "option.xml"
+    footer = arabic_dash_converter(resources_dir + option)
+    if footer is None:
+        shutil.copyfile(resources_dir + option, results_dir + option)
+    else:
+        with open(results_dir + option, 'w') as _f:
+            _f.write(footer)
+
+    assert(filecmp.cmp(results_dir + option, true_dir + option))
 
 if __name__ == '__main__':
     main()
